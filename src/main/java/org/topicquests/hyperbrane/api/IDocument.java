@@ -7,7 +7,6 @@ package org.topicquests.hyperbrane.api;
 import java.util.Date;
 import java.util.List;
 
-import org.topicquests.pg.api.IPostgresConnection;
 import org.topicquests.support.api.IResult;
 
 import net.minidev.json.JSONObject;
@@ -37,7 +36,16 @@ public interface IDocument {
 	// NOTES (20170217)
 	// An IDocument must track all the ISentence instances that have
 	// been successfully read;
+	// NOTES (20191024)
+	// * ABSTRACTS GET PARAGRAPHS
+	// * BINSORT ENTITIES (WORDGRAMIDS)
+	// * PUBMED & WIKIDATA COLLECTIONS
+	// * DOCUMENT TITLES FOR LANGUAGES
 	/////////////////////////////////////////////
+	
+	//////////////////////////////
+	// PROVENANCE
+	//////////////////////////////
 	
 	void setVersion(String version);
 	String getVersion();
@@ -52,20 +60,75 @@ public interface IDocument {
 	void setLastEditDate(String date);
 	Date getLastEditDate();
 	String getLastEditDateString();
-	JSONObject getData();
-	String toJSONString();
 	
+	//////////////////////////////
+	// IDENTITY AND DOCUMENT TYPE
+	//////////////////////////////
+
 	void setPMID(String pmid);
 	String getPMID();
 	
 	void setPMCID(String pmcid);
 	String getPMCID();
+
+	void setNodeType(String typeLocator);
+	String getNodeType();
+	
+	void setDocumentType(String type);
+	String getDocumentType();
 	
 	/**
-	 * Might return <code>null</code> if labels are used
+	 * This document's ID
+	 * @param id
+	 */
+	void setId(String id);
+	String getId();
+
+
+	//////////////////////////////
+	// PUBLICATION
+	//////////////////////////////
+	/**
+	 * All the metadata about this document
+	 * @param doc
+	 */
+	void setPublication(IPublication doc);
+	IPublication getPublication();
+
+	//////////////////////////////
+	// AUTHORS
+	//////////////////////////////
+	
+	/**
+	 * 
+	 * @param title 
+	 * @param initials
+	 * @param firstName 
+	 * @param middleName 
+	 * @param lastName
+	 * @param suffix e.g. 2nd, II, III, etc, can be <code>null</code>
+	 * @param degree e.g. M.D., PhD, ... can be <code>null</code>
+	 * @param fullName 
+	 * @param authorLocator 
+	 * @param publicationName 
+	 * @param publicationLocator 
+	 * @param publisherName 
+	 * @param publisherLocator 
+	 * @param affiliationName 
+	 * @param affiliationLocator 
 	 * @return
 	 */
-	String getTitle();
+	IAuthor addAuthor(String title, String initials, String firstName, String middleName, String lastName, String suffix, String degree, String fullName, String authorLocator, String publicationName, String publicationLocator, String publisherName, String publisherLocator, String affiliationName, String affiliationLocator);
+
+	void addAuthor(IAuthor author);
+	
+	void setAuthorList(List<IAuthor> authors);
+	
+	List<IAuthor> listAuthors();
+
+	//////////////////////////////
+	// DOCUMENT TITLES ARE LABELS
+	//////////////////////////////
 	
 	void addLabel(String label, String language);
 	
@@ -93,135 +156,27 @@ public interface IDocument {
 	 * @return can return <code>null</code>
 	 */
 	List<String> listLabels(String language);
-	void addDetails(String details, String language);
-	JSONObject getDetails();
-	String getDetails(String language);
-	List<String> listDetails();
-	List<String> listDetails(String language);
-	void addPropertyValue(String key, String value);
-	Object getProperty(String key);
-	void removeProperty(String key);
-	void removePropertyValue(String key, String value);
-	void setProperty(String key, Object value);
-	void setNodeType(String typeLocator);
-	
-	/**
-	 * All the metadata about this document
-	 * @param doc
-	 */
-	void setPublication(IPublication doc);
-	IPublication getPublication();
-	
-	void setAbstract(String text, String language);
-	
-	String getAbstract(String language);
+	//////////////////////////////
+	// ABSTRACTS
+	//////////////////////////////
 
 	
-	/**
-	 * 
-	 * @param title TODO
-	 * @param initials
-	 * @param firstName TODO
-	 * @param middleName TODO
-	 * @param lastName
-	 * @param suffix e.g. 2nd, II, III, etc, can be <code>null</code>
-	 * @param degree e.g. M.D., PhD, ... can be <code>null</code>
-	 * @param fullName TODO
-	 * @param authorLocator TODO
-	 * @param publicationName TODO
-	 * @param publicationLocator TODO
-	 * @param publisherName TODO
-	 * @param publisherLocator TODO
-	 * @param affiliationName TODO
-	 * @param affiliationLocator TODO
-	 * @return
-	 */
-	IAuthor addAuthor(String title, String initials, String firstName, String middleName, String lastName, String suffix, String degree, String fullName, String authorLocator, String publicationName, String publicationLocator, String publisherName, String publisherLocator, String affiliationName, String affiliationLocator);
+	//void setAbstract(String text, String language);
+	
+	//String getAbstract(String language);
+	
+	void addAbstractParagraph(String text, String language);
+	
+	List<String> listAbstractsForLanguage(String language);
+	
+	List<JSONObject> listAbstracts();
 
-	void addAuthor(IAuthor author);
-	
-	void setAuthorList(List<IAuthor> authors);
-	
-	List<IAuthor> listAuthors();
-	
-	/////////////////////////////////////////////
-	// Topic Map Support
-	/////////////////////////////////////////////
+	JSONObject getAllAbstracts();
 
-	/**
-	 * An IDocument can be created for any <em>node</em> brought
-	 * into the topic map, especially by way of importing (e.g. OWL ontologies)
-	 * @param nodeLocator
-	 */
-	void setTopicLocator(String nodeLocator);
-	String getTopicLocator();
-	
-	/**
-	 * This document's ID
-	 * @param id
-	 */
-	void setId(String id);
-	String getId();
-	/////////////////////////////////////////////
-	// Provenance Support
-	/////////////////////////////////////////////
+	//////////////////////////////
+	// CONTENTS - PARAGRAPHS
+	//////////////////////////////
 
-	/**
-	 * AgentId is the identity of the agent (person) who
-	 * is engaging the harvesting exercise
-	 * @param id
-	 */
-	//void setAgentId(String id);
-	//String getAgentId();
-	
-	void setOntologyClassLocator(String locator);
-	String getOntologyClassLocator();
-	
-	//////////////////////////
-	// TODO
-	// DBpedia:
-	//  We grab a DBPedia JSON blob for sentences
-	//   which get hits.
-	// Those go with sentences, but perhaps whole blobs
-	// should go here too?
-	//////////////////////////
-	
-	void addDbPediaURI(String uri);
-	
-	/**
-	 * Can return <code>null</code>
-	 * @return
-	 */
-	List<String> listDbPediaURIs();
-	
-	/////////////////////////////////////////////
-	// Document Support
-	// ICitation asks for authorLocator, not authorName
-	/////////////////////////////////////////////
-	
-	void setLanguage(String lang);
-	String getLanguage();
-		
-	/**
-	 * Add documents I cite
-	 * @param citation
-	 */
-	void addMyCitation(String citation);
-	List<String> listMyCitations();
-	void setMyCitationList(List<String>citations);
-	
-	/**
-	 * Documents which cite me. This may be a simple as a PMID
-	 * @param citation
-	 */
-	void addCitation(String citation);
-	List<String>listCitations();
-	void setCitationList(List<String>citations);
-	
-	/////////////////////////////////////////////
-	// Paragraph Tree Support
-	/////////////////////////////////////////////
-	
 	/**
 	 * <p>An {@link IDocument} is composed of {@link IParagraph} objects,
 	 * each of which is composed of {@link ISentence} objects.</p>
@@ -245,13 +200,169 @@ public interface IDocument {
 	 * @param paragraph
 	 */
 	void updateParagraph(IParagraph paragraph);
+	
+	/**
+	 * 
+	 * @param language defaults to "en" if <code>null</code>
+	 * @return
+	 */
+	List<String> listParagraphStrings(String language);
+	
+	List<IParagraph> listParagraphs();
+
+
+	//////////////////////////////
+	// CITATIONS - REFERENCES
+	//////////////////////////////
+	/**
+	 * Add documents I cite
+	 * @param citation
+	 */
+	void addMyCitation(String citation);
+	List<String> listMyCitations();
+	void setMyCitationList(List<String>citations);
+	
+	/**
+	 * Documents which cite me. This may be a simple as a PMID
+	 * @param citation
+	 */
+	void addCitation(String citation);
+	List<String>listCitations();
+	void setCitationList(List<String>citations);
+	//////////////////////////////
+	// SUBSTANCES
+	//////////////////////////////
+	
+	
+	void addSubstanceName(String name);
+	
+	List<String> listSubstanceNames();
+	
+	void addSubstanceWordGramId(String id);
+	
+	List<String> listSubstanceWordGramIds();
+
+	//////////////////////////////
+	// TAGS
+	//////////////////////////////
+	
+	void addTagName(String tag);
+	
+	List<String> listTagNames();
+	
+	void addTagWordGramId(String id);
+	List<String> listTagWordGramIds();
+
+	//////////////////////////////
+	// DBpedia & Wikidata
+	//////////////////////////////
+
+	//////////////////////////
+	// TODO
+	// DBpedia:
+	//  We grab a DBPedia JSON blob for sentences
+	//   which get hits.
+	// Those go with sentences, but perhaps whole blobs
+	// should go here too?
+	//////////////////////////
+	
+	void addDbPediaURI(String uri);
+	
+	/**
+	 * Can return <code>null</code>
+	 * @return
+	 */
+	List<String> listDbPediaURIs();
+
+	
+	void addWikidataURI(String uri);
+	
+	List<String> listWikidataURIs();
+	
+	/////////////////////
+	// ENTITY BIN SORT
+	// WordGram Histogram
+	// These are local to this document
+	/////////////////////
+	
+	void addToHistogram(String wordgramId);
+	
+	int getHistogramCount(String wordgramId);
+	
+	JSONObject getEntityHistogram();
+	
+
+	//////////////////////////////
+	// UTILITIES
+	//////////////////////////////
+	
+	JSONObject getData();
+	
+	String toJSONString();
+	
+	void addPropertyValue(String key, String value);
+	Object getProperty(String key);
+	void removeProperty(String key);
+	void removePropertyValue(String key, String value);
+	void setProperty(String key, Object value);
+
+	
+
+
+	
+	
+
+
+	
+
+	void addDetails(String details, String language);
+	JSONObject getDetails();
+	String getDetails(String language);
+	List<String> listDetails();
+	List<String> listDetails(String language);
+	
+	
+	
+	/////////////////////////////////////////////
+	// Topic Map Support
+	/////////////////////////////////////////////
+
+	/**
+	 * An IDocument can be created for any <em>node</em> brought
+	 * into the topic map, especially by way of importing (e.g. OWL ontologies)
+	 * @param nodeLocator
+	 */
+	void setTopicLocator(String nodeLocator);
+	String getTopicLocator();
+
+	/////////////////////////////////////////////
+	// ONTOLOGY Support
+	/////////////////////////////////////////////
+	
+	void setOntologyClassLocator(String locator);
+	String getOntologyClassLocator();
+	
+	
+	/////////////////////////////////////////////
+	// Document Support
+	// ICitation asks for authorLocator, not authorName
+	/////////////////////////////////////////////
+	
+	void setLanguage(String lang);
+	String getLanguage();
 		
-	JSONObject getAllAbstracts();
+
+	
+	/////////////////////////////////////////////
+	// Paragraph Tree Support
+	/////////////////////////////////////////////
+	
+		
 	////////////////////////////////////////////
 	//Sentence support
 	////////////////////////////////////////////
 	
-	void addSentence(ISentence sentence);
+	void addSentence(String sentenceId);
 	
 	void addSuccessfullyReadSentenceId(String sentenceId);
 	
@@ -263,22 +374,14 @@ public interface IDocument {
 	
 //	void addSentence(String sentence, String userId);
 	
-	void removeSentence(String sentenceLocator);
+	void removeSentence(String sentenceId);
 	
 	/**
 	 * 
 	 * @return can return <code>null</code>
 	 */
-	List<ISentence> listSentences();
+	List<String> listSentenceIDs();
 	
-	/**
-	 * 
-	 * @param language defaults to "en" if <code>null</code>
-	 * @return
-	 */
-	List<String> listParagraphStrings(String language);
-	
-	List<IParagraph> listParagraphs();
 	
 	// Metadata Support
 	/////////////////////////////////////////////
@@ -295,33 +398,7 @@ public interface IDocument {
 	 */
 	void traceStatement(String traceMessage);
 
-	////////////////////
-	// Tags
-	////////////////////
-	
-	void addTagName(String tag);
-	
-	List<String> listTagNames();
-	
-	void addTagWordGramId(String id);
-	List<String> listTagWordGramIds();
-	
-	///////////////////
-	// Substancees
-	///////////////////
-	
-	void addSubstanceName(String name);
-	
-	List<String> listSubstanceNames();
-	
-	void addSubstanceWordGramId(String id);
-	
-	List<String> listSubstanceWordGramIds();
-
-//	JSONObject getMap();
-	
-//	String toJSONPersist();
-	
+/**	
 	/////////////////////
 	// isA
 	// These are local findings while reading
@@ -334,14 +411,6 @@ public interface IDocument {
 	List<String> listIsAs();
 	
 	void remove(String subjectWordGramId, String objectWordGramId);
-
-	/////////////////////
-	// WordGram Histogram
-	// These are local to this document
-	/////////////////////
-	
-	void addToHistogram(String wordgramId);
-	
-	int getHistogramCount(String wordgramId);
+*/
 	
 }

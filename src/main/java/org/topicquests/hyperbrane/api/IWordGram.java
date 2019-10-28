@@ -44,6 +44,20 @@ public interface IWordGram extends Vertex {
 		COUNT_7					= "sevener",
 		COUNT_8					= "eighter";
 	
+	
+	/**
+	 * Version is used for optimistic locking
+	 * @param version
+	 */
+	void setVersion(String version);
+	
+	String getVersion();
+
+	
+	
+	
+	
+	
 	String getID();
 	/**
 	 * A transient value
@@ -52,6 +66,8 @@ public interface IWordGram extends Vertex {
 	boolean isNew();
 	
 	void markIsNew();
+	
+	
 	
 	/**
 	 * Stop words do not track sentences
@@ -184,12 +200,12 @@ public interface IWordGram extends Vertex {
 	//////////////////////////////////////////
 
 	/**
-	 * A sentence can have none to several DBpedia objects
+	 * A sentence can have one DBpedia record
 	 * @param dbp
 	 */
-	void addDbPediaJSON(JSONObject dbp);
+	void setDbPediaURI(String uri);
 	
-	List<JSONObject> listDbPediaObjects();
+	String getDbPediaURI();
 	
 	/**
 	 * Returns <code>true</code> if any objects exist
@@ -431,29 +447,7 @@ public interface IWordGram extends Vertex {
 	 */
 	String getCorrectedWord();
 	
-	/**
-	 * <p>A {@link INormalizeAgent} is registered with particular
-	 * instances of {@link IWordGram} where they can perform
-	 * normalizing computations.</p>
-	 * @param a
-	 */
-//	void registerNounNormalizerAgent(INormalizeAgent a);
-	
-//	void registerPredicateNormalizeAgent(INormalizeAgent a);
-	
-//	void registerOtherNormalizeAgent(INormalizeAgent a);
-	
-	/**
-	 * <p>If there are any {@link INormalizeAgent}s registered,
-	 * they will fire and produce their results.</p>
-	 * <p>Note that any given {@link ISentence} might have many 
-	 * different agents; they are internally fired, generally nouns first,
-	 * then predicates.</p>
-	 * @param doc
-	 * @param sentence
-	 * @return
-	 */
-	//IResult fireNormalizeAgents(IDocument doc, ISentence sentence);
+
 	
 	/**
 	 * <p>A <em>DAEMON</em> is a token which represents a particular

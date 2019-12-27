@@ -85,6 +85,9 @@ public interface IDocument {
 	String getId();
 
 
+	void setURL(String url);
+	String getURL();
+	
 	//////////////////////////////
 	// PUBLICATION
 	//////////////////////////////

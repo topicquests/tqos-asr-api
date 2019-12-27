@@ -28,6 +28,7 @@ public interface ILexTypes {
 		ADVERBIAL_PHRASE	= "advp",
 		PREPOSITION			= "prep",
 		PRONOUN				= "pro",
+		PUNCTUATION			= "punct",
 		CONJUNCTION			= "cnj",
 		C_CONJUNCTION		= "ccnj",
 		CONJUNCTIVE_ADVERB 	= "cadvp",

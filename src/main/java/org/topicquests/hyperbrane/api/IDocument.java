@@ -193,8 +193,9 @@ public interface IDocument {
 	 * Shortcut way to add a paragraph
 	 * @param theParagraph
 	 * @param language 
+	 * @return
 	 */
-	void addParagraph(String theParagraph, String language);
+	IParagraph addParagraph(String theParagraph, String language);
 	
 	/**
 	 * Paragraphs don't have their own database, so they

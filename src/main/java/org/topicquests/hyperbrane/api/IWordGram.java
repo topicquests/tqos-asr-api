@@ -67,7 +67,13 @@ public interface IWordGram extends Vertex {
 	
 	void markIsNew();
 	
+	/**
+	 * Set this word's lemma
+	 * @param lemma
+	 */
+	void setLemma(String lemma);
 	
+	String getLemma();
 	
 	/**
 	 * Stop words do not track sentences
@@ -212,6 +218,24 @@ public interface IWordGram extends Vertex {
 	 * @return
 	 */
 	boolean hasDBPedia();
+	
+	//////////////////////////////////////////
+	// Ontology References
+	//////////////////////////////////////////
+	boolean hasOntReferences();
+	
+	/**
+	 * Add a {@code uri} of any ontology class related to this wordgram
+	 * @param uri
+	 */
+	void addOntReference(String uri);
+	
+	/**
+	 * Can return {@code null}; use only if $hasOntReferences returns {@code true}
+	 * @return
+	 */
+	List<String> listOntReferences();
+
 	//////////////////////////////////////////
 	// Lens Codes
 	// Lenses are collections of OpenSherlock agents which

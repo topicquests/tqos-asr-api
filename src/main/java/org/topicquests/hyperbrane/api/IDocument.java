@@ -222,9 +222,9 @@ public interface IDocument {
 	 * Add documents I cite
 	 * @param citation
 	 */
-	void addMyCitation(String citation);
-	List<String> listMyCitations();
-	void setMyCitationList(List<String>citations);
+	void addMyCitation(JSONObject citation);
+	List<JSONObject> listMyCitations();
+	void setMyCitationList(List<JSONObject>citations);
 	
 	/**
 	 * Documents which cite me. This may be a simple as a PMID

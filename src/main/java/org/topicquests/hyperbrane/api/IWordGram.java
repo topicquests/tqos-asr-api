@@ -7,6 +7,8 @@ package org.topicquests.hyperbrane.api;
 import java.util.List;
 
 import com.tinkerpop.blueprints.Vertex;
+import org.topicquests.pg.api.IPostgresConnection;
+import org.topicquests.support.api.IResult;
 
 import net.minidev.json.JSONObject;
 /**
@@ -50,6 +52,7 @@ public interface IWordGram extends Vertex {
 	 * @param version
 	 */
 	void setVersion(String version);
+	void setVersion(IPostgresConnection conn, String version, IResult r) throws Exception;
 	
 	String getVersion();
 
@@ -73,12 +76,17 @@ public interface IWordGram extends Vertex {
 	 */
 	void setLemma(String lemma);
 	
+	void setLemma(IPostgresConnection conn, String lemma, IResult r) throws Exception;
+	
 	String getLemma();
 	
 	/**
 	 * Stop words do not track sentences
 	 */
 	void setIsStopWord();
+	
+	void setIsStopWord(IPostgresConnection conn, IResult r) throws Exception;
+	
 	boolean getIsStopWord();
 	
 	/**
@@ -90,7 +98,12 @@ public interface IWordGram extends Vertex {
 	 */
 	void addSentenceId(String sentenceId);
 	
+	void addSentenceId(IPostgresConnection conn, String sentenceId, IResult r) throws Exception ;
+	
 	void removeSentenceId(String sentenceId);
+	
+	void removeSentenceId(IPostgresConnection conn, String sentenceId, IResult r) throws Exception;
+	
 	List<String>listSentenceIds();
 	
 	/**
@@ -101,6 +114,8 @@ public interface IWordGram extends Vertex {
 	 * @param newWordGramId
 	 */
 	void setRedirectToId(String newWordGramId);
+	
+	void setRedirectToId(IPostgresConnection conn, String newWordGramId, IResult r) throws Exception;
 	String getRedirectToId();
 	boolean hasRedirectToId();
 	
@@ -114,6 +129,8 @@ public interface IWordGram extends Vertex {
 	 * to the first one together with swapping subject for object when making the change.</p>
 	 */
 	void setIsInversePredicate();
+	void setIsInversePredicate(IPostgresConnection conn, IResult r) throws Exception;
+	
 	boolean getIsInversePredicate();
 	
 	/**
@@ -123,6 +140,8 @@ public interface IWordGram extends Vertex {
 	 * A does not cause B<br/></p>
 	 */
 	void setIsNegativePredicate();
+	void setIsNegativePredicate(IPostgresConnection conn, IResult r) throws Exception;
+	
 	boolean getIsNegativePredicate();
 	
 	/**
@@ -133,6 +152,7 @@ public interface IWordGram extends Vertex {
 	 * @param id
 	 */
 	void setContradictionPredicateId(String id);
+	void setContradictionPredicateId(IPostgresConnection conn, String id, IResult r) throws Exception;
 
 	/**
 	 *
@@ -148,13 +168,15 @@ public interface IWordGram extends Vertex {
 	 * @param typeLocator
 	 */
 	void setPredicatePropertyType(String typeLocator);
+	void setPredicatePropertyType(IPostgresConnection conn, String typeLocator, IResult r) throws Exception;
+	
 	String getPredicatePropertyType();
 	boolean hasPredicatePropertyType();
 	
 
 	
 	void setPredicateTense(String pastPresentFuture);
-	
+	void setPredicateTense(IPostgresConnection conn, String pastPresentFuture, IResult r) throws Exception;
 	/**
 	 * Can return <code>null</code> if is not a predicate
 	 * @return
@@ -167,12 +189,14 @@ public interface IWordGram extends Vertex {
 	 * @param topicLocator
 	 */
 	void addTopicLocator(String topicLocator);
+	void addTopicLocator(IPostgresConnection conn, String topicLocator, IResult r) throws Exception;
 	
 	/**
 	 * 
 	 * @param topicLocator
 	 */
 	void removeTopicLocator(String topicLocator);
+	void removeTopicLocator(IPostgresConnection conn, String topicLocator, IResult r) throws Exception;
 	
 	/**
 	 * <p>Return the count of topic locators in this {@link IWordGram}.
@@ -190,15 +214,18 @@ public interface IWordGram extends Vertex {
 	 * @param newLocator
 	 */
 	void substituteTopicLocator(String oldLocator, String newLocator);
+	void substituteTopicLocator(IPostgresConnection conn, String oldLocator, String newLocator, IResult r) throws Exception;
+	
 	
 	List<String>listTopicLocators();
-
-	void setGramType(String t);
-	String getGramType();
 	
-	int getGramSize();
+	void setWordGramSize(int size);
+	void setWordGramSize(IPostgresConnection conn, int size, IResult r) throws Exception;
+	int getWordGramSize();
 	
 	void addWordId(String wordId);
+	void addWordId(IPostgresConnection conn, String wordId, IResult r) throws Exception;
+	
 	List<String> listWordIds();
 	
 	//////////////////////////////////////////
@@ -206,10 +233,11 @@ public interface IWordGram extends Vertex {
 	//////////////////////////////////////////
 
 	/**
-	 * A sentence can have one DBpedia record
+	 * A wordgram can have one DBpedia record
 	 * @param dbp
 	 */
 	void setDbPediaURI(String uri);
+	void setDbPediaURI(IPostgresConnection conn, String uri, IResult r) throws Exception;
 	
 	String getDbPediaURI();
 	
@@ -229,6 +257,7 @@ public interface IWordGram extends Vertex {
 	 * @param uri
 	 */
 	void addOntReference(String uri);
+	void addOntReference(IPostgresConnection conn, String uri, IResult r) throws Exception;
 	
 	/**
 	 * Can return {@code null}; use only if $hasOntReferences returns {@code true}
@@ -247,17 +276,22 @@ public interface IWordGram extends Vertex {
 	 * @param code
 	 */
 	void addLensCode(String code);
+	void addLensCode(IPostgresConnection conn, String code, IResult r) throws Exception;
+	
 	List<String> listLensCodes();
 	boolean containsLensCode(String code);
 	void removeLensCode(String code);
+	void removeLensCode(IPostgresConnection conn, String code, IResult r) throws Exception;
 
 	//////////////////////////////////////////
 	// LatticeTypes and CG matching
 	//////////////////////////////////////////
 
 	void addLatticeType(String type);
+	void addLatticeType(IPostgresConnection conn, String type, IResult r) throws Exception;
 	
 	void removeLatticeType(String type);
+	void removeLatticeType(IPostgresConnection conn, String type, IResult r) throws Exception;
 	
 	List<String> listLatticeTypes();
 	
@@ -271,30 +305,42 @@ public interface IWordGram extends Vertex {
 	 * Picks up whether noun or noun phrase
 	 */
 	void addIsNounType();
+	void addIsNounType(IPostgresConnection conn, IResult r) throws Exception;
 	/**
 	 * A kind of noun
 	 */
 	void addIsProperNounType();
+	void addIsProperNounType(IPostgresConnection conn, IResult r) throws Exception;
 	void addIsGerundType();
+	void addIsGerundType(IPostgresConnection conn, IResult r) throws Exception;
 	/**
 	 * Picks up whether verb or verb phrase
 	 */
 	void addIsVerbType();
+	void addIsVerbType(IPostgresConnection conn, IResult r) throws Exception;
 	void addIsAdverbType();
+	void addIsAdverbType(IPostgresConnection conn, IResult r) throws Exception;
 	void addIsAdjectiveType();
+	void addIsAdjectiveType(IPostgresConnection conn, IResult r) throws Exception;
 	void addIsPronounType();
+	void addIsPronounType(IPostgresConnection conn, IResult r) throws Exception;
 	void addIsPrepositionType();
+	void addIsPrepositionType(IPostgresConnection conn, IResult r) throws Exception;
 	void addIsConjunctionType();
+	void addIsConjunctionType(IPostgresConnection conn, IResult r) throws Exception;
 	void addIsQuestionWordType();
+	void addIsQuestionWordType(IPostgresConnection conn, IResult r) throws Exception;
 	void addIsStopWordType();
+	void addIsStopWordType(IPostgresConnection conn, IResult r) throws Exception;
 	void addIsDeterminerType();
+	void addIsDeterminerType(IPostgresConnection conn, IResult r) throws Exception;
 	
 	/**
 	 * A gram could represent more than one lexType
 	 * @param lt
 	 */
 	void addLexType(String lt);
-	
+	void addLexType(IPostgresConnection conn,String t, IResult r) throws Exception;
 	/**
 	 * 
 	 * @return can return <code>null</code> if not known
@@ -336,6 +382,7 @@ public interface IWordGram extends Vertex {
 	boolean isPercentage();
 
 	void addExpectation(String lexType);
+	void addExpectation(IPostgresConnection conn,String lexTyp, IResult r) throws Exception;
 	List<String> listExpectations();
 	
 	boolean expectsNoun();
@@ -353,7 +400,7 @@ public interface IWordGram extends Vertex {
 	//////////////////////////////////////////
 
 	void setFormulaId(String id);
-	
+	void setFormulaId(IPostgresConnection conn,String id, IResult r) throws Exception;
 	/**
 	 * Can return <code>null</code> if no formula exists
 	 * @return
@@ -366,14 +413,17 @@ public interface IWordGram extends Vertex {
 	//////////////////////////////////////////
 	
 	void addHypernymWord(String word);
+	void addHypernymWord(IPostgresConnection conn,String word, IResult r) throws Exception;
 	List<String>listHypernyms();
 	boolean hasHypernyms();
 	
 	void addHyponymWord(String word);
+	void addHyponymWord(IPostgresConnection conn,String word, IResult r) throws Exception;
 	List<String> listHyponyms();
 	boolean hasHyponyms();
 	
 	void addSynonym(String word);
+	void addSynonym(IPostgresConnection conn,String word, IResult r) throws Exception;
 	List<String> listSynonyms();
 	boolean hasSynonyms();
 
@@ -384,6 +434,7 @@ public interface IWordGram extends Vertex {
 	 * @param role
 	 */
 	void addRole(String sentenceId, String role);
+	void addRole(IPostgresConnection conn, String sentenceId,String role, IResult r) throws Exception;
 	
 	/**
 	 * Can return <code>null</code>
@@ -396,6 +447,7 @@ public interface IWordGram extends Vertex {
 	//////////////////////////////////////////
 
 	void addSemanticFrameNodeId(String id);
+	void addSemanticFrameNodeId(IPostgresConnection conn,String id, IResult r) throws Exception;
 	List<String> listSemanticFrameIds();
 	boolean hasSemanticFrames();
 	
@@ -408,6 +460,7 @@ public interface IWordGram extends Vertex {
 	 * @param words
 	 */
 	void setWords(String words);
+	void setWords(IPostgresConnection conn,String words, IResult r) throws Exception;
 	
 	String getWords();
 	
@@ -420,6 +473,7 @@ public interface IWordGram extends Vertex {
 	 * @param attribute
 	 */
 	void addAttribute(String attribute);
+	void addAttribute(IPostgresConnection conn,String attribute, IResult r) throws Exception;
 	
 	/**
 	 * <p>Add the {@link IWordGram} id for a synonym for this gram.</p>
@@ -427,6 +481,7 @@ public interface IWordGram extends Vertex {
 	 * @param id
 	 */
 	void addSynonymId(String id);
+	void addSynonymId(IPostgresConnection conn,String id, IResult r) throws Exception;
 	
 	/**
 	 * Can return <code>null</code>
@@ -445,31 +500,6 @@ public interface IWordGram extends Vertex {
 	//////////////////////////////////////////
 	// Other stuff, likely not used
 	//////////////////////////////////////////
-
-	/**
-	 * If a singleton has been corrected, we keep it around but use
-	 * this API to make <em>transform-time</em> corrections
-	 * @param id
-	 * @deprecated see setRedirectToId
-	 */
-	void setCorrectedWordId(String id);
-	
-	/**
-	 * 
-	 * @param word
-	 * @deprecated see getRedirectToId
-	 */
-	void setCorrectedWord(String word);
-	/**
-	 * @deprecated
-	 * @return
-	 */
-	String getCorrectedWordId();
-	/**
-	 * @deprecated
-	 * @return
-	 */
-	String getCorrectedWord();
 	
 
 	
@@ -483,6 +513,7 @@ public interface IWordGram extends Vertex {
 	 * @param daemonToken
 	 */
 	void setDaemon(String wordId, String daemonToken);
+	void setDaemon(IPostgresConnection conn, String wordId,String daemonToken, IResult r) throws Exception;
 	
 	/**
 	 * Return the DAEMON token for this word if it exists
